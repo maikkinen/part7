@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Table, Form, Button } from 'react-bootstrap'
 import {
   BrowserRouter as Router,
   Route, Link, Redirect, withRouter
@@ -37,13 +38,17 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     {console.log("anecdotes in the list ", anecdotes)}
     <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map(anecdote =>
-        <li key={anecdote.id}>
-          <Link style={linkprops} to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
-        </li>
-      )}
-    </ul>
+    <Table striped>
+      <tbody>
+        {anecdotes.map(anecdote =>
+          <tr key={anecdote.id}>
+            <td>
+              <Link style={linkprops} to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </Table>
   </div>
 )
 
@@ -99,21 +104,23 @@ const CreateNew = (props) => {
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          content
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <div>
+            content
           <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
-        </div>
-        <div>
-          author
+          </div>
+          <div>
+            author
           <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-        <div>
-          url for more info
+          </div>
+          <div>
+            url for more info
           <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
-        </div>
-        <button>create</button>
-      </form>
+          </div>
+        </Form.Group>
+        <Button variant="primary" type="submit">create</Button>
+      </Form>
     </div>
   )
 
@@ -180,14 +187,14 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className='container'>
       <Router>
         <h1>Software anecdotes</h1>
         <Menu />
         <Route path="/about" render={() => <About />} />
         <Route path="/create" render={() =>
           notification ? <Redirect to='/' /> : <CreateNew addNew={addNew} setNotification={setNotification} />} />
-          <div style={notificationprops}>{notification}</div>
+        <div style={notificationprops}>{notification}</div>
         <Route exact path="/" render={() => <AnecdoteList anecdotes={anecdotes} />} />
         <Route exact path="/anecdotes/:id" render={({ match }) =>
           <Anecdote anecdote={anecdoteById(match.params.id)} />
